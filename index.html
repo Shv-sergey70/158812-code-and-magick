@@ -1,5 +1,5 @@
 <!DOCTYPE html>
-<html>
+<html style="transform: scale(0.8)">
 <head>
   <meta charset="utf-8">
   <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=PT+Mono&subset=latin,cyrillic">
@@ -63,7 +63,7 @@
   <div class="demo"></div>
 
   <div class="setup-open">
-    <img src="./img/user-1.jpg" class="setup-open-icon">
+    <img src="./img/user-1.jpg" class="setup-open-icon" tabindex="0">
   </div>
 </header>
 
@@ -71,7 +71,9 @@
   <form class="setup-wizard-form"
         method="post"
         enctype="multipart/form-data"
-        autocomplete="off">
+        autocomplete="off"
+        action="https://js.dump.academy/code-and-magick">
+
 
     <div class="setup-title">
       <div class="setup-user">
@@ -80,13 +82,13 @@
           <input type="file" name="avatar">
         </div>
         <label>
-          <input type="text" name="username"
+          <input type="text" name="username" minlength="2"
                  maxlength="25" required
                  class="setup-user-name" value="Синий Пендальф"/>
         </label>
       </div>
 
-      <span class="setup-close">&times;</span>
+      <span class="setup-close" tabindex="0">&times;</span>
     </div>
 
 
@@ -181,6 +183,30 @@
   </div>
 </template>
 
+<script>
+  var fireballSize = 22;
+  var getFireballSpeed = function(left) {
+    if (left === true) {
+      return 5;
+    }
+    else {
+      return 2;
+    }
+  }
+  var wizardSpeed = 3;
+  var wizardWidth = 70;
+  var getWizardHeight = function() {
+    return wizardWidth * 1.337;
+  }
+  var getWizardX = function(width) {
+    return 0.5 * width;
+  }
+  var getWizardY = function(height) {
+    return 0.33  * height;
+  }
+</script>
+<script src="js/stat.js"></script>
+<script src="js/setup.js"></script>
 <script src="js/game.js"></script>
 
 </body>
