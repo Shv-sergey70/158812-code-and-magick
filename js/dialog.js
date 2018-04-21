@@ -50,13 +50,23 @@
 
   setupSubmit.addEventListener("click", function() {
     if (!setup.classList.contains("hidden")) {
-      form.submit();
+      form.addEventListener("submit", function (evt) {
+        evt.preventDefault();
+        window.save(new FormData(form), function(response) {
+          setup.classList.add("hidden");
+        });
+      });
     };
   });
 
   setupSubmit.addEventListener("keydown", function() {
     if (window.util.isEnterEvent(event) && !setup.classList.contains("hidden") && document.activeElement.classList.contains("setup-submit")) {
-      form.submit();
+      form.addEventListener("submit", function (evt) {
+        evt.preventDefault();
+        window.save(new FormData(form), function(response) {
+          setup.classList.add("hidden");
+        });
+      });
     };
   });
 
@@ -92,4 +102,4 @@
 
     document.addEventListener("mousemove", onMouseMove);
     document.addEventListener("mouseup", onMouseUp);
-  })
+  });
