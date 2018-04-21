@@ -5,35 +5,39 @@
   var FIREBALL_COLORS = ["#ee4830", "#30a8ee", "#5ce6c0", "#e848d5", "#e6e848"];
   var WIZARDS_LIST_SIZE = 4;
   var wizards = [];
-
   var setupWizard = document.querySelector(".setup-wizard");
   var wizardCoat = document.querySelector(".setup-wizard .wizard-coat");
   var wizardEye = document.querySelector(".setup-wizard .wizard-eyes");
-  var setupFireballWrap= document.querySelector(".setup-fireball-wrap");
 
-  setupWizard.addEventListener("click", function() {
-    wizardCoat.style.fill = COAT_COLORS[generateRandom(COAT_COLORS)];
-    wizardEye.style.fill = EYES_COLORS[generateRandom(EYES_COLORS)];
-    setupFireballWrap.style = "background-color: " + FIREBALL_COLORS[generateRandom(FIREBALL_COLORS)];
-  });
+  //При клике на волшебника - меняются его параметры (цвет глаз, куртки и файрбола)
+  (function() {
+    var ourWizardEye = document.getElementById("wizard-eyes");
+    var ourWizardCoat = document.getElementById("wizard-coat");
+    var ourWizardFireball = document.querySelector(".setup-fireball");
+    var setupFireballWrap= document.querySelector(".setup-fireball-wrap");
+    ourWizardEye.addEventListener("click", function() {
+      wizardEye.style.fill = EYES_COLORS[generateRandom(EYES_COLORS)];
+    });
+    ourWizardCoat.addEventListener("click", function() {
+      wizardCoat.style.fill = COAT_COLORS[generateRandom(COAT_COLORS)];
+    });
+    ourWizardFireball.addEventListener("click", function() {
+      setupFireballWrap.style = "background-color: " + FIREBALL_COLORS[generateRandom(FIREBALL_COLORS)];
+    });
+  })();
 
-  //Открываем div с местом под похожих персонажей
-  document.querySelector(".setup-similar").classList.remove("hidden");
-  //Определяем div куда будем вставлять элементы
-  var similarListElement = document.querySelector(".setup-similar-list");
-  //Определяем div который будем копировать
-  var similarWizardTemplate = document.querySelector("#similar-wizard-template").content.querySelector(".setup-similar-item");
   //Функция для добавления и клонирования всех свойств магам и магов !! копирования мага (true - означает с содержимым элемента)
   var renderWizard = function(wizards) {
+    var similarWizardTemplate = document.querySelector("#similar-wizard-template").content.querySelector(".setup-similar-item");  //Определяем div который будем копировать
     var wizardElement = similarWizardTemplate.cloneNode(true);
     wizardElement.querySelector(".setup-similar-label").textContent = wizards.name;
     wizardElement.querySelector(".wizard-coat").style.fill = wizards.colorCoat;
     wizardElement.querySelector(".wizard-eyes").style.fill = wizards.colorEyes;
-
     return wizardElement;
   };
 
   var successHandler = function (wizards) {
+    var similarListElement = document.querySelector(".setup-similar-list"); //Определяем div куда будем вставлять элементы
     var fragment = document.createDocumentFragment();
     for (var i = 0; i < 4; i++) {
       fragment.appendChild(renderWizard(wizards[i]));
@@ -54,45 +58,47 @@
   initWizards();
 
 
-//Drag-and-drop
-  var setupArtifactsCell = document.querySelectorAll(".setup-artifacts-cell");
-  for (var j = 0; j < setupArtifactsCell.length; j++) {
-    setupArtifactsCell[j].setAttribute("draggable", "true");
-  }
-  var dropZones = document.querySelectorAll('.setup-artifacts .setup-artifacts-cell');
-  var shopElement = document.querySelector(".setup-artifacts-shop");
-  var draggedItem = null;
+  //Drag-and-drop
+  (function() {
+    var setupArtifactsCell = document.querySelectorAll(".setup-artifacts-cell");
+    for (var j = 0; j < setupArtifactsCell.length; j++) {
+      setupArtifactsCell[j].setAttribute("draggable", "true");
+    }
+    var dropZones = document.querySelectorAll('.setup-artifacts .setup-artifacts-cell');
+    var shopElement = document.querySelector(".setup-artifacts-shop");
+    var draggedItem = null;
 
-  shopElement.addEventListener("dragstart", function() {
-    if (event.target.tagName.toLowerCase() === "img") {
-      draggedItem = event.target;
-      event.dataTransfer.setData("text/plain", event.target.alt);
-      for (var p = 0; p < dropZones.length; p++) {
-          dropZones[p].style.outline = "2px dashed red";
+    shopElement.addEventListener("dragstart", function() {
+      if (event.target.tagName.toLowerCase() === "img") {
+        draggedItem = event.target;
+        event.dataTransfer.setData("text/plain", event.target.alt);
+        for (var p = 0; p < dropZones.length; p++) {
+            dropZones[p].style.outline = "2px dashed red";
+        }
       }
-    }
-  });
+    });
 
-  var artifactsElement = document.querySelector(".setup-artifacts");
-  artifactsElement.addEventListener("dragover", function() {
-    event.preventDefault();
-    return false
-  });
+    var artifactsElement = document.querySelector(".setup-artifacts");
+    artifactsElement.addEventListener("dragover", function() {
+      event.preventDefault();
+      return false
+    });
 
-  artifactsElement.addEventListener("drop", function(){
-    event.target.style.backgroundColor = "";
-    event.target.appendChild(draggedItem.cloneNode(true));
-    for (var p = 0; p < dropZones.length; p++) {
-        dropZones[p].style.outline = "";
-    }
-    event.preventDefault()
-  });
-  artifactsElement.addEventListener("dragenter", function() {
-    event.target.style.backgroundColor = "yellow";
-    event.preventDefault();
-  });
-  artifactsElement.addEventListener("dragleave", function() {
-    event.target.style.backgroundColor = "";
-    event.preventDefault();
-  });
+    artifactsElement.addEventListener("drop", function(){
+      event.target.style.backgroundColor = "";
+      event.target.appendChild(draggedItem.cloneNode(true));
+      for (var p = 0; p < dropZones.length; p++) {
+          dropZones[p].style.outline = "";
+      }
+      event.preventDefault()
+    });
+    artifactsElement.addEventListener("dragenter", function() {
+      event.target.style.backgroundColor = "yellow";
+      event.preventDefault();
+    });
+    artifactsElement.addEventListener("dragleave", function() {
+      event.target.style.backgroundColor = "";
+      event.preventDefault();
+    });
+  })();
 })();

@@ -17,11 +17,13 @@
   //Инициализация обработчика событий на нажатие клавиши и открытие окна
   var openPopup = function() {
     setup.classList.remove("hidden");
+    document.querySelector(".setup-similar").classList.remove("hidden"); //Открываем div с местом под похожих персонажей
     document.addEventListener("keydown", onPopupEscPress)
   };
   //Инициализация обработчика событий на нажатие клавиши и закрытие окна
   var closePopup = function() {
     setup.classList.add("hidden");
+    document.querySelector(".setup-similar").classList.add("hidden");
     document.removeEventListener("keydown", onPopupEscPress)
   };
   //Открытие окна редактирования персонажа и добавление обработчика событий на нажатие клавиши
