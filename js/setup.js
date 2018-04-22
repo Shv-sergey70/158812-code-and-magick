@@ -5,26 +5,6 @@
   var FIREBALL_COLORS = ["#ee4830", "#30a8ee", "#5ce6c0", "#e848d5", "#e6e848"];
   var WIZARDS_LIST_SIZE = 4;
   var wizards = [];
-  var setupWizard = document.querySelector(".setup-wizard");
-  var wizardCoat = document.querySelector(".setup-wizard .wizard-coat");
-  var wizardEye = document.querySelector(".setup-wizard .wizard-eyes");
-
-  //При клике на волшебника - меняются его параметры (цвет глаз, куртки и файрбола)
-  (function() {
-    var ourWizardEye = document.getElementById("wizard-eyes");
-    var ourWizardCoat = document.getElementById("wizard-coat");
-    var ourWizardFireball = document.querySelector(".setup-fireball");
-    var setupFireballWrap= document.querySelector(".setup-fireball-wrap");
-    ourWizardEye.addEventListener("click", function() {
-      wizardEye.style.fill = EYES_COLORS[generateRandom(EYES_COLORS)];
-    });
-    ourWizardCoat.addEventListener("click", function() {
-      wizardCoat.style.fill = COAT_COLORS[generateRandom(COAT_COLORS)];
-    });
-    ourWizardFireball.addEventListener("click", function() {
-      setupFireballWrap.style = "background-color: " + FIREBALL_COLORS[generateRandom(FIREBALL_COLORS)];
-    });
-  })();
 
   //Функция для добавления и клонирования всех свойств магам и магов !! копирования мага (true - означает с содержимым элемента)
   var renderWizard = function(wizards) {
@@ -36,13 +16,31 @@
     return wizardElement;
   };
 
-  var successHandler = function (wizards) {
-    var similarListElement = document.querySelector(".setup-similar-list"); //Определяем div куда будем вставлять элементы
-    var fragment = document.createDocumentFragment();
-    for (var i = 0; i < 4; i++) {
-      fragment.appendChild(renderWizard(wizards[i]));
-    };
-    similarListElement.appendChild(fragment);
+  var successHandler = function (data) {
+    window.wizards = data;
+    updateWizards();
+    (function() {
+      var setupWizard = document.querySelector(".setup-wizard");
+      var similarListElement = document.querySelector(".setup-similar-list"); //Определяем div куда будем вставлять элементы
+      var fragment = document.createDocumentFragment();
+      var prevTimer;
+      var similarWizardsBLockRender = function () {
+        while(similarListElement.firstElementChild) {
+          similarListElement.removeChild(similarListElement.firstElementChild);
+        };
+        for (var i = 0; i < 4; i++) {
+          fragment.appendChild(renderWizard(window.wizards[i]));
+        };
+        similarListElement.appendChild(fragment);
+      };
+      similarWizardsBLockRender();
+      setupWizard.addEventListener("click", function () {
+        window.clearTimeout(window.prevTimer);
+        window.prevTimer = window.setTimeout(function () {
+          similarWizardsBLockRender();
+        }, 600);
+      });
+    })();
   };
 
   var errorHandler = function(errorMessage) {
@@ -57,6 +55,52 @@
   };
   initWizards();
 
+  //При клике на волшебника - меняются его параметры (цвет глаз, куртки и файрбола)
+  (function() {
+    //Рейтинг волшебников
+    var ourWizardFireballColor = "#ee4830";
+    var ourWizardEyesColor = "black";
+    var ourWizardCoatColor = "rgb(101, 137, 164)";
+    var getRank = function (wizard) {
+      var rank = 0;
+      if (wizard.colorCoat === ourWizardCoatColor) {
+        rank += 2;
+      };
+      if (wizard.colorEyes === ourWizardEyesColor) {
+        rank += 1;
+      };
+      return rank;
+    };
+
+    window.updateWizards = function () {
+      renderWizard(window.wizards.sort(function(left, right) {
+        var rankDiff = getRank(right) - getRank(left);
+        if (rankDiff === 0) {
+          rankDiff = window.wizards.indexOf(left) - window.wizards.indexOf(right);
+        }
+        return rankDiff;
+      }));
+    };
+    var ourWizardEyes = document.querySelector(".setup-wizard .wizard-eyes");
+    var ourWizardCoat = document.querySelector(".setup-wizard .wizard-coat");
+    var ourWizardFireball= document.querySelector(".setup-fireball-wrap");
+
+    ourWizardEyes.addEventListener("click", function() {
+      ourWizardEyesColor = EYES_COLORS[generateRandom(EYES_COLORS)]
+      ourWizardEyes.style.fill = ourWizardEyesColor;
+      updateWizards()//Пересчитывание рейтинга после каждого нажатия
+    });
+    ourWizardCoat.addEventListener("click", function() {
+      ourWizardCoatColor = COAT_COLORS[generateRandom(COAT_COLORS)];
+      ourWizardCoat.style.fill = ourWizardCoatColor;
+      updateWizards()//Пересчитывание рейтинга после каждого нажатия
+    });
+    ourWizardFireball.addEventListener("click", function() {
+      ourWizardFireballColor = FIREBALL_COLORS[generateRandom(FIREBALL_COLORS)];
+      ourWizardFireball.style = "background-color: " + ourWizardFireballColor;
+      updateWizards()//Пересчитывание рейтинга после каждого нажатия
+    });
+  })();
 
   //Drag-and-drop
   (function() {

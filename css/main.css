@@ -644,7 +644,7 @@ input[type=radio]:checked + .review-mark-label
 
     width: 250px;
     margin: 0 auto;
-    padding-top: 50px;
+    padding-top: 0px;
 }
 
 .footer-link:hover
@@ -652,14 +652,6 @@ input[type=radio]:checked + .review-mark-label
     opacity: .6;
 }
 
-.footer-link img
-{
-    position: absolute;
-    top: 0;
-    left: 50%;
-
-    transform: translateX(-50%);
-}
 
 .setup
 {
